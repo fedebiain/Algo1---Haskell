@@ -1,3 +1,4 @@
+import GHC.Base (VecElem(Int16ElemRep))
 --Renombre de tipos:
 type Punto2D = (Float, Float)
 type Anio = (Int) 
@@ -196,3 +197,38 @@ aproxEuler n
 raizDeDos :: Int -> Float
 raizDeDos 1 = 1.0
 raizDeDos n = 1.0 +  1.0 / (2 + raizDeDos(n-1))
+
+dobleSumatoria :: Int -> Int -> Int
+dobleSumatoria i j 
+  | i == 0 = 0
+  | otherwise = sumatoriaAux i j + dobleSumatoria (i-1) j
+  where 
+    sumatoriaAux :: Int -> Int -> Int 
+    sumatoriaAux _ 0 = 0
+    sumatoriaAux i j = i^j + sumatoriaAux i (j-1)
+
+sumaPotencias :: Int -> Int -> Int -> Int
+sumaPotencias q i j
+  | i == 0 || j == 0 = 0
+  | i == j = sumaPotenciasAux q i j 
+  | otherwise = q ^ (i + j) + sumaPotencias q (i - 1) (j - 1)
+  where 
+    sumaPotenciasAux :: Int -> Int -> Int -> Int
+    sumaPotenciasAux _ _ (-1) = 0
+    sumaPotenciasAux q i j = q ^(i + j) + sumaPotenciasAux q i (j - 1)
+
+sumaRacionales :: Int -> Int -> Float
+sumaRacionales 0 _ = 0  
+sumaRacionales n m = sumaAux n m + sumaRacionales (n - 1) m
+ where 
+  sumaAux :: Int -> Int -> Float
+  sumaAux _ 0 = 0
+  sumaAux n m = (fromIntegral n / fromIntegral m) + sumaAux n (m - 1)
+
+menorDivisor :: Int -> Int 
+menorDivisor n = menorDivisorAux n 2 
+  where 
+    menorDivisorAux :: Int -> Int -> Int
+    menorDivisorAux n k
+      | n `mod` k == 0 = k
+      | otherwise      = menorDivisorAux n (k + 1)
