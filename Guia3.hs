@@ -232,3 +232,42 @@ menorDivisor n = menorDivisorAux n 2
     menorDivisorAux n k
       | n `mod` k == 0 = k
       | otherwise      = menorDivisorAux n (k + 1)
+
+esPrimo :: Int -> Bool
+esPrimo 1 = False
+esPrimo n = esPrimoAux n 2
+
+esPrimoAux :: Int -> Int -> Bool
+esPrimoAux n k 
+  | mod n k /= 0 = esPrimoAux n (k + 1)
+  | n == k = True
+  | otherwise = False
+
+esPrimoDos :: Int -> Int 
+esPrimoDos 1 = 0
+esPrimoDos n = esPrimoAux n 2
+   where 
+    esPrimoAux :: Int -> Int -> Int
+    esPrimoAux n k 
+      | mod n k /= 0 = esPrimoAux n (k + 1)
+      | n == k = n
+      | otherwise = 0
+
+noEsPrimo :: Int -> Int 
+noEsPrimo 1 = 0
+noEsPrimo n = noEsPrimoAux n 2
+   where 
+    noEsPrimoAux :: Int -> Int -> Int
+    noEsPrimoAux n k 
+      | mod n k == 0 = 1
+      | mod n k /= 0 = noEsPrimoAux(k + 1) 
+      | otherwise = 0 
+
+sumatoriaPrimo :: Int -> Int 
+sumatoriaPrimo 0 = 0
+sumatoriaPrimo n = esPrimoDos n + sumatoriaPrimo(n - 1)
+
+
+--nesimoPrimo :: Int -> Int 
+--nesimoPrimo 
+--sumatoriaprimos - sumatorianoprimos
