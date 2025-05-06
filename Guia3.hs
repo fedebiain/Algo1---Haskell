@@ -268,6 +268,82 @@ sumatoriaPrimo 0 = 0
 sumatoriaPrimo n = esPrimoDos n + sumatoriaPrimo(n - 1)
 
 
+{-problema hayQueCodificar (c: Char, mapeo: seq⟨Char x Char⟩ ) : Bool {
+  requiere: {No hay elementos repetidos entre las primeras componentes de mapeo}
+  requiere: {No hay elementos repetidos entre las segundas componentes de mapeo}
+  asegura: {res = true <=> c es igual a la primera componente de alguna tupla de mapeo}-}
+
+
+hayQueCodificar :: Char -> [(Char, Char)] -> Bool
+hayQueCodificar _ [] = False
+hayQueCodificar i (x:xs)
+  | i == fst x = True 
+  | otherwise = hayQueCodificar i xs 
+
+{-problema cuantasVecesHayQueCodificar (c: Char, frase: seq⟨Char⟩, mapeo: seq⟨Char x Char⟩ ) : Z {
+  requiere: {No hay elementos repetidos entre las primeras componentes de mapeo}
+  requiere: {No hay elementos repetidos entre las segundas componentes de mapeo}
+  requiere: {|frase| > 0 }
+  requiere: {c pertenece a frase}
+  asegura: {(res = 0 y hayQueCodificar (c, mapeo) = false) o (res = cantidad de veces que c aparece en frase y hayQueCodificar (c, mapeo) = true)}-}
+
+cuantasVecesHayQueCodificar :: Char -> [Char] -> [(Char, Char)] -> Int
+cuantasVecesHayQueCodificar i xs ys 
+  | hayQueCodificar i ys = contadorDeC i xs 
+  | otherwise = 0  
+
+contadorDeC :: Char -> [Char] -> Int
+contadorDeC _ [] = 0  
+contadorDeC i (x:xs)
+  | i == x = 1 + contadorDeC i xs
+  | otherwise = contadorDeC i xs
+
+  {-problema laQueMasHayQueCodificar (frase: seq⟨Char⟩, mapeo: seq⟨Char x Char⟩ ) : Char {
+  requiere: {No hay elementos repetidos entre las primeras componentes de mapeo}
+  requiere: {No hay elementos repetidos entre las segundas componentes de mapeo}
+  requiere: {|frase| > 0 }
+  requiere: {Existe al menos un c que pertenece a frase y hayQueCodificar(c, mapeo)=true}
+  asegura: {res = c donde c es el caracter tal que cuantasVecesHayQueCodificar(c, frase, mapeo) es mayor a cualquier otro caracter perteneciente a frase}
+  asegura: {Si existen más de un caracter c que cumple la condición anterior, devuelve el que aparece primero en frase }-}
+
+todosDistintosAux :: Char -> [Char] -> Bool
+todosDistintosAux _ [] = True
+todosDistintosAux i (x:xs)
+  | i == x = False
+  | otherwise = todosDistintosAux i xs
+
+todosDistintos :: [Char] -> Bool
+todosDistintos [_] = True 
+todosDistintos (x:y:xs) 
+  | todosDistintosAux x (y:xs) = todosDistintos (y:xs) 
+  | otherwise = False
+
+laQueMasHayQueCodificar :: [Char] -> [(Char, Char)] -> Char
+laQueMasHayQueCodificar [x] _ = x
+laQueMasHayQueCodificar (x:y:xs) ys
+  | todosDistintos (x:y:xs) = x
+  | cuantasVecesHayQueCodificar x (x:y:xs) ys > cuantasVecesHayQueCodificar y (x:y:xs) ys = laQueMasHayQueCodificar (x:xs) ys
+  | otherwise = laQueMasHayQueCodificar (y:xs) ys 
+
+  {-problema codificarFrase (frase: seq⟨Char⟩, mapeo: seq⟨Char x Char⟩ ) : seq ⟨Char⟩ {
+  requiere: {No hay elementos repetidos entre las primeras componentes de mapeo}
+  requiere: {No hay elementos repetidos entre las segundas componentes de mapeo}
+  requiere: {|frase| > 0 }
+  asegura: {|res| = | frase|}
+  asegura: { Para todo 0 <= i < |frase| si hayQueCodificar(frase[i], mapeo) = true entonces res[i]= (mapeo[j])1, para un j tal que 0 <= j < |mapeo| y mapeo[j])0=frase[i]}
+  asegura: { Para todo 0 <= i < |frase| si hayQueCodificar(frase[i], mapeo) = false entonces res[i]= frase[i]}-}
+
+invertirTupla :: (Char, Char) -> (Char, Char)
+invertirTupla (x,y) = (y,x)
+
+codificarFrase :: [Char] -> [(Char, Char)] -> [Char]
+codificarFrase [] _ = []
+codificarFrase _ [] = []
+codificarFrase (x:xs) (y:ys) 
+  | hayQueCodificar x ys = fst (invertirTupla y) : snd (invertirTupla y) : codificarFrase xs ys
+  | otherwise = fst y : snd y : codificarFrase xs ys  
+
+
 --nesimoPrimo :: Int -> Int 
 --nesimoPrimo 
 --sumatoriaprimos - sumatorianoprimos
